@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Auth;
+use App\Services\PassportService;
 
 class RegisterController extends Controller
 {
@@ -67,5 +70,28 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    public function apiRegister(Request $request, PassportService $passport)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors(),
+            ], 500);
+        }
+
+        $user = $this->create($request->all());
+        Auth::login($user);
+
+        return response()->json([
+            'error' => false,
+            'user_name' => auth()->user()->name,
+            'id' => auth()->id(),
+            'email' => auth()->user()->email,
+            'access_token' => $passport->requestGrantToken($data),
+        ], 200);
     }
 }
