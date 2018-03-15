@@ -53,7 +53,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
         ]);
     }
 
@@ -78,20 +78,26 @@ class RegisterController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'error' => true,
-                'message' => $validator->errors(),
+                'userName' => null,
+                'id' => null,
+                'email' => null,
+                'password' => null,
+                'token' => [],
             ], 500);
         }
+
+        // dd($request->all());
 
         $user = $this->create($request->all());
         Auth::login($user);
 
         return response()->json([
-            'error' => false,
-            'user_name' => auth()->user()->name,
+            // 'error' => false,
+            'userName' => auth()->user()->name,
             'id' => auth()->id(),
             'email' => auth()->user()->email,
-            'access_token' => $passport->requestGrantToken($data),
+            'password' => $request->password,
+            'token' => [$passport->requestGrantToken($request->only('email', 'password'))],
         ], 200);
     }
 }
