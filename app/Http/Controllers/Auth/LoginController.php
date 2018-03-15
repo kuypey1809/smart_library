@@ -49,17 +49,21 @@ class LoginController extends Controller
             // Auth::login(auth()->user());
 
             return response()->json([
-                'error' => false,
-                'user_name' => auth()->user()->name,
+                // 'error' => false,
+                'userName' => auth()->user()->name,
                 'id' => auth()->id(),
                 'email' => auth()->user()->email,
-                'access_token' => $passport->requestGrantToken($data),
+                'password' => $request->password,
+                'token' => [$passport->requestGrantToken($data)],
             ], 200);
         }
 
         return response()->json([
-            'error' => true,
-            'message' => 'Invalid email or password',
+            'userName' => null,
+            'id' => null,
+            'email' => null,
+            'password' => null,
+            'token' => [],
         ], 500);
     }
 }
