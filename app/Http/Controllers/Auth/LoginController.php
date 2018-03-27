@@ -37,7 +37,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
     }
 
     public function apiLogin(Request $request, PassportService $passport)
@@ -64,11 +64,9 @@ class LoginController extends Controller
         ], 500);
     }
 
-    public function apiLogout(Request $request)
+    public function apiLogout()
     {
-        $data = $request->only('email', 'password');
-
-        Auth::logout();
+        auth()->user()->token()->revoke();
 
         return response()->json([
             'userName' => null,
