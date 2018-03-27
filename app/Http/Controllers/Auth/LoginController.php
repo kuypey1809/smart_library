@@ -45,11 +45,8 @@ class LoginController extends Controller
         $data = $request->only('email', 'password');
 
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
-            // Authentication passed...
-            // Auth::login(auth()->user());
 
             return response()->json([
-                // 'error' => false,
                 'userName' => auth()->user()->name,
                 'id' => auth()->id(),
                 'email' => auth()->user()->email,
@@ -65,5 +62,20 @@ class LoginController extends Controller
             'password' => null,
             'token' => [],
         ], 500);
+    }
+
+    public function apiLogout(Request $request)
+    {
+        $data = $request->only('email', 'password');
+
+        Auth::logout();
+
+        return response()->json([
+            'userName' => null,
+            'id' => null,
+            'email' => null,
+            'password' => null,
+            'token' => [],
+        ], 200);
     }
 }

@@ -86,13 +86,11 @@ class RegisterController extends Controller
             ], 500);
         }
 
-        // dd($request->all());
 
         $user = $this->create($request->all());
         Auth::login($user);
 
         return response()->json([
-            // 'error' => false,
             'userName' => auth()->user()->name,
             'id' => auth()->id(),
             'email' => auth()->user()->email,

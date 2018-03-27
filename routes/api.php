@@ -29,3 +29,7 @@ Route::group(['namespace' => 'Auth'], function () {
     Route::post('login', 'LoginController@apiLogin')->name('login');
     Route::post('register', 'RegisterController@apiRegister')->name('register');
 });
+
+Route::group(['namespace' => 'Auth', 'middleware' => 'auth:api'], function () {
+    Route::post('logout', 'LoginController@apiLogout')->name('logout');
+});
